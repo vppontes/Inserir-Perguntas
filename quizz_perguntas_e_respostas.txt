@@ -1,0 +1,109 @@
+
+1. Qual tag em HTML é usada para inserir uma imagem em uma página?
+a) ( ) <pic>
+b) ( ) <src>
+c) ( ) <img>
+d) ( ) <image>
+
+2. No CSS, qual propriedade altera a cor do texto?
+a) ( ) font-color
+b) ( ) color
+c) ( ) background-color
+d) ( ) text-style
+
+3. Qual atributo do elemento <form> define a URL para onde os dados serão enviados?
+a) ( ) src
+b) ( ) action
+c) ( ) method
+d) ( ) target
+
+4. Em JavaScript, qual método é usado para adicionar um elemento ao final de um array?
+a) ( ) shift()
+b) ( ) pop()
+c) ( ) unshift()
+d) ( ) push()
+
+5. Qual é a principal função do protocolo HTTP?
+a) ( ) Definir regras de segurança em redes
+b) ( ) Transferir páginas web entre cliente e servidor
+c) ( ) Hospedar sites
+d) ( ) Conectar dispositivos móveis
+
+
+6. Qual desses é um exemplo de malware?
+a) ( ) Firewall
+b) ( ) Vírus
+c) ( ) Antivírus
+d) ( ) Backup
+
+7. O que significa a sigla HTTPS?
+a) ( ) Hyper Transfer Private Service
+b) ( ) Hyper Text Transfer Secure
+c) ( ) High Transfer Protocol Service
+d) ( ) Hyper Text Test Security
+
+8. Qual medida abaixo é mais eficiente para proteger uma senha?
+a) ( ) Utilizar datas de aniversário
+b) ( ) Usar a mesma senha em todos os sites
+c) ( ) Usar senhas fortes com letras, números e símbolos
+d) ( ) Compartilhar a senha apenas com amigos próximos
+
+9. O que caracteriza um ataque de phishing?
+a) ( ) O uso de força bruta para descobrir senhas
+b) ( ) O envio de mensagens falsas para enganar usuários e obter dados pessoais
+c) ( ) A instalação de antivírus sem autorização do usuário
+d) ( ) A sobrecarga de servidores com muitas requisições
+
+10. Qual é o objetivo da criptografia?
+a) ( ) Melhorar a velocidade da rede
+b) ( ) Ocultar informações para garantir confidencialidade
+c) ( ) Aumentar o espaço de armazenamento
+d) ( ) Substituir backups
+
+
+11. Qual tipo de teste verifica se cada parte isolada do código funciona corretamente?
+a) ( ) Teste de sistema
+b) ( ) Teste de integração
+c) ( ) Teste de unidade
+d) ( ) Teste de regressão
+
+12. Qual documento descreve como os testes devem ser realizados?
+a) ( ) Plano de testes
+b) ( ) Casos de uso
+c) ( ) Diagrama UML
+d) ( ) Requisitos funcionais
+
+13. Qual tipo de teste é usado para verificar o desempenho de um sistema sob alta carga?
+a) ( ) Teste de integração
+b) ( ) Teste de carga
+c) ( ) Teste de unidade
+d) ( ) Teste funcional
+
+14. No processo de testes, qual é o objetivo do bug report?
+a) ( ) Apagar registros de erros
+b) ( ) Documentar falhas encontradas
+c) ( ) Executar casos de teste
+d) ( ) Validar requisitos
+
+15. Qual técnica de teste se baseia nos requisitos do sistema sem considerar o código-fonte?
+a) ( ) Teste caixa-preta
+b) ( ) Teste caixa-branca
+c) ( ) Teste unitário
+d) ( ) Teste de integração
+
+Gabarito
+1. c) <img>
+2. b) color
+3. b) action
+4. d) push()
+5. b) Transferir páginas web entre cliente e servidor
+6. b) Vírus
+7. b) Hyper Text Transfer Secure
+8. c) Usar senhas fortes com letras, números e símbolos
+9. b) O envio de mensagens falsas para enganar usuários e obter dados pessoais
+10. b) Ocultar informações para garantir confidencialidade
+11. c) Teste de unidade
+12. a) Plano de testes
+13. b) Teste de carga
+14. b) Documentar falhas encontradas
+15. a) Teste caixa-preta
