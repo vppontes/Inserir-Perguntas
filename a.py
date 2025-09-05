@@ -1,4 +1,45 @@
 import re
+import psycopg2
+
+dbname = 'railway',
+host = 'gondola.proxy.rlwy.net',
+port = '41562',
+user = 'postgres',
+password = 'xLZRRPNWFgRqeSHuNjvZRSZqErtetuCO'
+
+def inserir_curso(nome_curso):
+    con = psycopg2.connect(
+        dbname = dbname,
+        host = host,
+        port = port,
+        user = user,
+        password = password
+    )
+    sql_insert = f'''
+        INSERT INTO quizz.question
+        (question_statement, discipline_id, difficulty)
+        VALUES(%s, %s, %s);
+    '''
+
+    cursor = con.cursor()
+    cursor.execute(sql_insert, ( nome_curso, '195a4b30-f73a-4832-9dfa-443e8c754203', 0 ))
+    con.commit()
+    cursor.close()
+    con.close()
+
+def atualizar_curso():
+    con = psycopg2.connect(
+        dbname = dbname,
+        host = host,
+        port = port,
+        user = user,
+        password = password
+    )
+    sql_update = f'''
+        UPDATE quizz.question
+        SET question_statement='%s', discipline_id=?, difficulty=0
+        WHERE id='%s';
+    '''
 
 # Função para processar o arquivo e extrair as perguntas e respostas
 def extrair_info_do_arquivo(caminho_arquivo):
@@ -15,6 +56,8 @@ def extrair_info_do_arquivo(caminho_arquivo):
     perguntas = re.findall(padrao_pergunta, conteudo_sem_gabarito, re.DOTALL)
     respostas = re.findall(padrao_respostas, conteudo)
     respostas_corretas = re.findall(padrao_resposta_correta, conteudo)
+
+    respostas = [re.sub(r'\(.*?\)', '', r) for r in respostas]
 
     # Organizando as informações
     perguntas_respostas = []
@@ -39,7 +82,7 @@ informacoes = extrair_info_do_arquivo(caminho_arquivo)
 # Exibindo as informações extraídas
 for info in informacoes:
     print("-" * 40)
-    print(info['pergunta'])
+    inserir_curso(info['pergunta'])
     print("Alternativas:\n")
     for alternativa in info['alternativas']:
         print(f"{alternativa}")  # Exibe apenas o título da alternativa
