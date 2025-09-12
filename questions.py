@@ -23,7 +23,7 @@ client = genai.Client(api_key=apiKey)
 response = client.models.generate_content(
     model="gemini-2.5-flash",
     contents='''
-        Quero que elabore perguntas de quizz, com 5 alternativas, níveis diferentes sobre o ensino de ADS, que tem as disciplinas Banco de Dados, Programação Web, Qualidade e Teste de Software, Segurança da Informação, Design Digital, Sistemas Embarcados, Programação Mobile, Fundamentos da Informática, Análise e Projeto de Sistemas, Técnicas de Programação e Algoritmos e volte um JSON da seguinte forma:
+        Quero que elabore perguntas de quizz, com 5 alternativas, níveis diferentes sobre o ensino de ADS, que tem as disciplinas Banco de Dados, Programação Web, Qualidade e Teste de Software, Segurança da Informação, Design Digital, Sistemas Embarcados, Programação Mobile, Fundamentos da Informática, Análise e Projeto de Sistemas, Técnicas de Programação e Algoritmos que sejam menos específicas e volte um JSON da seguinte forma:
         [
             {
                 "question_title": "(Título da questão de no máximo 140 caracteres)",
@@ -40,11 +40,11 @@ response_text = response.text
 clean_text = re.sub(r'^```json', '', response_text)
 clean_text = re.sub(r'```', '', clean_text)
 
+print(clean_text)
+
 clean_text = clean_text.strip()
 
 questions = json.loads(clean_text)
-
-print('Questões:\n', questions)
 
 def insert_questions(q):
     if not q:
