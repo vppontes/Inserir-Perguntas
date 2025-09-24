@@ -5,6 +5,7 @@ import re
 from dotenv import load_dotenv
 from disciplines import disciplines
 import os
+from courses import lessons
 
 load_dotenv()
 
@@ -19,6 +20,39 @@ user = os.getenv("DB_USER")
 password = os.getenv("DB_PASSWORD")
 
 client = genai.Client(api_key=apiKey)
+def verify_lessons(l):
+    con = psycopg2.connect(
+        dbname = dbname,
+        host = host,
+        port = port,
+        user = user,
+        password = password
+    )
+    cursor = con.cursor()
+
+    for lesson in lessons:
+        sql_select_course_id = '''
+            SELECT "Id" FROM quizz."Course" WHERE "CourseName" = %s
+        '''
+        cursor.execute(sql_select_course_id, (lesson,))
+        course_id = cursor.fetchone()[0]
+
+        sql_select_discipline_id = '''
+            SELECT "Id" FROM quizz."Discipline" WHERE "CourseId" = %s
+        '''
+        cursor.execute(sql_select_discipline_id, (course_id,))
+        discipline_id = cursor.fetchone()[0]
+
+        sql_select_question_id = '''
+            SELECT "Id" FROM quizz."Question" WHERE "DisciplineId" = %s
+        '''
+        cursor.execute(sql_select_question_id, (discipline_id,))
+        exists = cursor.fetchone()
+
+        if exists is not None:
+            print('Já existem questões para essa matéria !\n', lesson)
+            continue
+    
 
 response = client.models.generate_content(
     model="gemini-2.5-flash",
