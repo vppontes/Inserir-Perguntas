@@ -1,0 +1,4 @@
+psycopg2-binary>=2.9
+google-genai
+python-dotenv>=1.0
+rapidfuzz>=3.6
