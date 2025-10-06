@@ -30,6 +30,21 @@ cursor = con.cursor()
 
 client = genai.Client(api_key=apiKey)
 
+def reconnect():
+    global con, cursor
+    try:
+        con = psycopg2.connect(
+            dbname=dbname,
+            host=host,
+            port=port,
+            user=user,
+            password=password
+        )
+        cursor = con.cursor()
+        print("🔁 Reconectado ao banco de dados")
+    except Exception as e:
+        print(f"❌ Falha ao reconectar: {e}")
+
 def normalizar_texto(texto):
     texto = texto.lower()
     texto = re.sub(r'[^\w\s]', '', texto)
@@ -105,25 +120,25 @@ def verify_lessons(l):
         cursor.execute('SELECT "Id" FROM quizz."Course" WHERE "CourseName" = %s', (lesson,))
         course_row = cursor.fetchone()
         if not course_row:
-            print(f"Curso {lesson} não encontrado.")
+            print(f"❌ Curso {lesson} não encontrado.")
             continue
         course_id = course_row[0]
 
-        # Verifica disciplina
+        # Verifica disciplinas do curso
         cursor.execute('SELECT "Id", "DisciplineName" FROM quizz."Discipline" WHERE "CourseId" = %s', (course_id,))
         discipline_rows = cursor.fetchall()
         if not discipline_rows:
-            print(f"Nenhuma disciplina para o curso {lesson}.")
+            print(f"⚠️ Nenhuma disciplina encontrada para o curso {lesson}.")
             continue
 
         for discipline_id, discipline_name in discipline_rows:
             # Verifica se já há questões
             cursor.execute('SELECT "Id" FROM quizz."Question" WHERE "DisciplineId" = %s', (discipline_id,))
             if cursor.fetchone():
-                print(f'Já existem questões para {discipline_name} ({lesson})')
+                print(f'⏩ Já existem questões para {discipline_name} ({lesson})')
                 continue
 
-            print(f'Criando questões para {discipline_name} ({lesson})')
+            print(f'📝 Criando questões para {discipline_name} ({lesson})')
 
             i = 0
             while i <= 2:
@@ -143,18 +158,35 @@ def verify_lessons(l):
                         '''
                     )
 
-                    clean_text = re.sub(r'^```json', '', response.text.strip())
-                    clean_text = re.sub(r'```$', '', clean_text)
-                    questions = json.loads(clean_text)
+                    raw_response = response.text.strip()
 
-                    insert_questions(questions, discipline_id, discipline_name, lesson)
+                    # Tenta extrair o JSON entre ```json ... ```
+                    json_match = re.search(r'```json\s*(\[\s*\{.*?\}\s*\])\s*```', raw_response, re.DOTALL)
+                    if not json_match:
+                        print(f"⚠️ Não foi possível encontrar JSON válido na resposta da IA para {discipline_name} ({lesson})")
+                        print("Resposta bruta:")
+                        print(raw_response)
+                        break  # Pula para a próxima disciplina
+
+                    clean_text = json_match.group(1)
+
+                    try:
+                        questions = json.loads(clean_text)
+                        insert_questions(questions, discipline_id, discipline_name, lesson)
+                    except json.JSONDecodeError as e:
+                        print(f"❌ Erro ao decodificar JSON para {discipline_name} ({lesson}): {e}")
+                        print("Trecho capturado:")
+                        print(clean_text)
+                        break  # Pula para a próxima disciplina
 
                 except Exception as e:
-                    print(f"Erro ao processar IA para {lesson}/{discipline_name}: {e}")
+                    print(f"❌ Erro ao processar IA para {lesson}/{discipline_name}: {e}")
                     con.rollback()
-                    continue
+                    break  # Pula para a próxima disciplina
+
                 i += 1
-    print('Todas as questões foram inseridas !')
+
+    print('✅ Todas as questões foram processadas!')
 
 verify_lessons(lessons)
 
