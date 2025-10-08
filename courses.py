@@ -23,11 +23,11 @@ client = genai.Client(api_key=apiKey)
 # Cursos que você quer criar ou complementar com novas disciplinas
 lessons = [
     # "Português",
-    "Matemática",
-    "Geografia",
+    # "Matemática",
+    # "Geografia",
     "História",
-    "Análise e Desenvolvimento de Sistemas",
-    "Design Gráfico"
+    # "Análise e Desenvolvimento de Sistemas",
+    # "Design Gráfico"
 ]
 
 def normalizar_texto(texto):
@@ -38,7 +38,7 @@ def normalizar_texto(texto):
 
 def disciplina_similar_existe(cursor, course_id, nome_disciplina, limite_similaridade=85):
     cursor.execute('''
-        SELECT "DisciplineName" FROM quizz."Discipline" WHERE "CourseId" = %s
+        SELECT "DisciplineName" FROM public."Discipline" WHERE "CourseId" = %s
     ''', (course_id,))
     disciplinas = cursor.fetchall()
 
@@ -66,7 +66,7 @@ def create_courses(l):
 
     for lesson in l:
         # Verifica se o curso já existe
-        cursor.execute('SELECT "Id" FROM quizz."Course" WHERE "CourseName" = %s', (lesson,))
+        cursor.execute('SELECT "Id" FROM public."Course" WHERE "CourseName" = %s', (lesson,))
         course_row = cursor.fetchone()
 
         if course_row:
@@ -106,7 +106,7 @@ def create_courses(l):
                         continue
 
                     cursor.execute('''
-                        INSERT INTO quizz."Discipline" ("Id", "DisciplineName", "CourseId", "Description")
+                        INSERT INTO public."Discipline" ("Id", "DisciplineName", "CourseId", "Description")
                         VALUES (gen_random_uuid(), %s, %s, %s)
                     ''', (disc_name, course_id, disc_desc))
 
@@ -156,8 +156,8 @@ def create_courses(l):
                 course_disciplines = course_data["course_disciplines"]
 
                 cursor.execute('''
-                    INSERT INTO quizz."Course" ("Id", "CourseName", "Description", "Category")
-                    VALUES (gen_random_uuid(), %s, %s, %s)
+                    INSERT INTO public."Course" ("Id", "CourseName", "Description", "Category", "Rating", "CreatedAt, UpdatedAt")
+                    VALUES (gen_random_uuid(), %s, %s, %s, 0, now(), now())
                     RETURNING "Id"
                 ''', (course_name, course_desc, course_category))
 
@@ -168,7 +168,7 @@ def create_courses(l):
                     disc_desc = disciplina["discipline_description"]
 
                     cursor.execute('''
-                        INSERT INTO quizz."Discipline" ("Id", "DisciplineName", "CourseId", "Description")
+                        INSERT INTO public."Discipline" ("Id", "DisciplineName", "CourseId", "Description")
                         VALUES (gen_random_uuid(), %s, %s, %s)
                     ''', (disc_name, course_id, disc_desc))
 
@@ -179,9 +179,9 @@ def create_courses(l):
                 con.rollback()
                 continue
 
-    con.commit()
-    cursor.close()
-    con.close()
+    # con.commit()
+    # cursor.close()
+    # con.close()
 
 # Roda tudo
 create_courses(lessons)

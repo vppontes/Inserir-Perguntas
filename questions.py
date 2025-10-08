@@ -52,7 +52,7 @@ def normalizar_texto(texto):
     return texto
 
 def pergunta_parecida(cursor, disciplina_id, nova_pergunta_normalizada, limite_similaridade=75):
-    cursor.execute('SELECT "QuestionStatement" FROM quizz."Question" WHERE "DisciplineId" = %s', (disciplina_id,))
+    cursor.execute('SELECT "QuestionStatement" FROM public."Question" WHERE "DisciplineId" = %s', (disciplina_id,))
     perguntas = cursor.fetchall()
 
     for (existente,) in perguntas:
@@ -86,7 +86,7 @@ def insert_questions(questions, disc_id, disc_name, lesson):
                 continue
 
             sql_insert_question = '''
-                INSERT INTO quizz."Question"
+                INSERT INTO public."Question"
                 ("Id", "QuestionStatement", "DisciplineId", "Difficulty")
                 VALUES(gen_random_uuid(), %s, %s, %s)
                 RETURNING "Id";
@@ -97,7 +97,7 @@ def insert_questions(questions, disc_id, disc_name, lesson):
             for text_alternative, correct in alternatives:
                 is_correct = True if correct == 1 else False
                 sql_insert_answers = '''
-                    INSERT INTO quizz."Answer"
+                    INSERT INTO public."Answer"
                     ("Id", "QuestionId", "AnswerText", "IsCorrect")
                     VALUES(gen_random_uuid(), %s, %s, %s)
                 '''
@@ -117,7 +117,7 @@ def insert_questions(questions, disc_id, disc_name, lesson):
 def verify_lessons(l):
     for lesson in l:
         # Verifica curso
-        cursor.execute('SELECT "Id" FROM quizz."Course" WHERE "CourseName" = %s', (lesson,))
+        cursor.execute('SELECT "Id" FROM public."Course" WHERE "CourseName" = %s', (lesson,))
         course_row = cursor.fetchone()
         if not course_row:
             print(f"❌ Curso {lesson} não encontrado.")
@@ -125,7 +125,7 @@ def verify_lessons(l):
         course_id = course_row[0]
 
         # Verifica disciplinas do curso
-        cursor.execute('SELECT "Id", "DisciplineName" FROM quizz."Discipline" WHERE "CourseId" = %s', (course_id,))
+        cursor.execute('SELECT "Id", "DisciplineName" FROM public."Discipline" WHERE "CourseId" = %s', (course_id,))
         discipline_rows = cursor.fetchall()
         if not discipline_rows:
             print(f"⚠️ Nenhuma disciplina encontrada para o curso {lesson}.")
@@ -133,7 +133,7 @@ def verify_lessons(l):
 
         for discipline_id, discipline_name in discipline_rows:
             # Verifica se já há questões
-            cursor.execute('SELECT "Id" FROM quizz."Question" WHERE "DisciplineId" = %s', (discipline_id,))
+            cursor.execute('SELECT "Id" FROM public."Question" WHERE "DisciplineId" = %s', (discipline_id,))
             if cursor.fetchone():
                 print(f'⏩ Já existem questões para {discipline_name} ({lesson})')
                 continue
