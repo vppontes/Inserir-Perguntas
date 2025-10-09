@@ -85,23 +85,21 @@ def insert_questions(questions, disc_id, disc_name, lesson):
                 ignoradas += 1
                 continue
 
-            sql_insert_question = '''
+            cursor.execute('''
                 INSERT INTO public."Question"
-                ("Id", "QuestionStatement", "DisciplineId", "Difficulty")
-                VALUES(gen_random_uuid(), %s, %s, %s)
-                RETURNING "Id";
-            '''
-            cursor.execute(sql_insert_question, (title, disc_id, difficulty))
+                ("Id", "QuestionStatement", "DisciplineId", "Difficulty") VALUES
+                (gen_random_uuid(), %s, %s, %s) RETURNING "Id";
+            ''', (title, disc_id, difficulty))
             question_id = cursor.fetchone()[0]
 
             for text_alternative, correct in alternatives:
                 is_correct = True if correct == 1 else False
-                sql_insert_answers = '''
+                
+                cursor.execute('''
                     INSERT INTO public."Answer"
-                    ("Id", "QuestionId", "AnswerText", "IsCorrect")
-                    VALUES(gen_random_uuid(), %s, %s, %s)
-                '''
-                cursor.execute(sql_insert_answers, (question_id, text_alternative, is_correct))
+                    ("Id", "QuestionId", "AnswerText", "IsCorrect") VALUES
+                    (gen_random_uuid(), %s, %s, %s);
+                ''', (question_id, text_alternative, is_correct))
 
         print(f'Questões inseridas para {disc_name}')
         inseridas += 1

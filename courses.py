@@ -106,9 +106,9 @@ def create_courses(l):
                         continue
 
                     cursor.execute('''
-                        INSERT INTO public."Discipline" ("Id", "DisciplineName", "CourseId", "Description")
-                        VALUES (gen_random_uuid(), %s, %s, %s)
-                    ''', (disc_name, course_id, disc_desc))
+                        INSERT INTO public."Discipline"
+                        ("Id", "Description", "DisciplineName", "CreatedAt", "UpdatedAt", "CourseId") VALUES (gen_random_uuid(), %s, %s, now(), now(), %s);
+                    ''', (disc_desc, disc_name, course_id))
 
                 print(f'✅ Novas disciplinas inseridas para "{lesson}"')
 
@@ -155,10 +155,15 @@ def create_courses(l):
                 course_category = course_data["course_category"]
                 course_disciplines = course_data["course_disciplines"]
 
+                if course_category == 'MÉDIO':
+                    course_category = 1
+                else:
+                    course_category = 0
+
                 cursor.execute('''
-                    INSERT INTO public."Course" ("Id", "CourseName", "Description", "Category", "Rating", "CreatedAt, UpdatedAt")
-                    VALUES (gen_random_uuid(), %s, %s, %s, 0, now(), now())
-                    RETURNING "Id"
+                    INSERT INTO public."Course"
+                    ("Id", "CourseName", "Description", "Category", "Rating", "CreatedAt", "UpdatedAt")
+                    VALUES(gen_random_uuid(), %s, %s, %s, 0, now(), now()) RETURNING "Id";
                 ''', (course_name, course_desc, course_category))
 
                 course_id = cursor.fetchone()[0]
@@ -168,9 +173,10 @@ def create_courses(l):
                     disc_desc = disciplina["discipline_description"]
 
                     cursor.execute('''
-                        INSERT INTO public."Discipline" ("Id", "DisciplineName", "CourseId", "Description")
-                        VALUES (gen_random_uuid(), %s, %s, %s)
-                    ''', (disc_name, course_id, disc_desc))
+                        INSERT INTO public."Discipline"
+                        ("Id", "Description", "DisciplineName", "CreatedAt", "UpdatedAt", "CourseId") VALUES
+                        (gen_random_uuid(), %s, %s, now(), now(), %s);
+                    ''', (disc_desc, disc_name, course_id))
 
                 print(f'✅ Curso "{course_name}" e disciplinas criados com sucesso!')
 
