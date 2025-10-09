@@ -76,7 +76,7 @@ def create_courses(l):
             # Prompt para gerar novas disciplinas diferentes
             prompt = f"""
             Me retorne 5 matérias diferentes das já criadas para o curso de {lesson} nas ETECs.
-            As matérias devem ser básicas, fáceis e com descrição de no máximo 50 caracteres.
+            As matérias devem ser básicas, fáceis para serem de um quiz e com descrição de no máximo 50 caracteres.
             Use o seguinte JSON:
 
             [
